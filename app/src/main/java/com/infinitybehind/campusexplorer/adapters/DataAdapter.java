@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.infinitybehind.campusexplorer.MapActivity;
 import com.infinitybehind.campusexplorer.R;
@@ -86,7 +85,6 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataHolder> {
 
         final DataModel dataItem = dataset.get(position);
         Log.e("LONG : ",""+dataItem.getLongitude());
-
         place.setText(dataItem.getPlaceName());
         roomno.setText(dataItem.getRoomNo());
         floor.setText(dataItem.getFloor());
@@ -102,7 +100,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataHolder> {
             @Override
             public void onClick(View view) {
                 Log.e("Clicked", "PASSED");
-                Toast.makeText(holder.itemView.getContext(),"LAT : "+dataItem.getLatitude()+"\n"+"Long : "+dataItem.getLongitude(),Toast.LENGTH_LONG).show();
+                //Toast.makeText(holder.itemView.getContext(),"LAT : "+dataItem.getLatitude()+"\n"+"Long : "+dataItem.getLongitude(),Toast.LENGTH_LONG).show();
                 Intent i = new Intent(holder.itemView.getContext(), MapActivity.class);
                 i.putExtra("title",dataItem.getRoomNo());
                 i.putExtra("lat",dataItem.getLatitude());

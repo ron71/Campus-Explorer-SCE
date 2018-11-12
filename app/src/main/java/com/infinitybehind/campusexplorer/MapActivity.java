@@ -1,12 +1,15 @@
 package com.infinitybehind.campusexplorer;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,24 +18,28 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.security.Permission;
+
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
 
     private GoogleMap mMap;
-    // For PERMISSIONS android 6.0+
-    final static  int PERMISSION_ALL = 1;
-    final static String[] PERMISSIONS={Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_FINE_LOCATION};
-    MarkerOptions mo;
-    Marker marker;
-
     double lat, lng;
+    double cur_lat, cur_long;
     String title;
     LatLng myCoordinates;
     LocationManager locationManager;
+    String gps_serviceName = Context.LOCATION_SERVICE;
+    Location location;
+
+    String provider;
+
+    private Marker myposition;
+    private Marker placePosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,17 +49,27 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        //Intent bundle fetch
         Intent i = getIntent();
         Bundle b = i.getExtras();
         lat = b.getFloat("lat");
         lng = b.getFloat("lng");
-        Log.e("MAP LNG", ""+lng);
-        Log.e("MAP LAT", ""+lat);
+        Log.e("MAP LNG", "" + lng);
+        Log.e("MAP LAT", "" + lat);
 
         title = b.getString("title");
-        locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
-        mo = new MarkerOptions().position(new LatLng(0,0)).title("My Current Location");
-        if(Build.VERSION.SDK_INT>=23 && !isPer)
+        locationManager = (LocationManager) getSystemService(gps_serviceName);
+        provider = locationManager.getBestProvider(new Criteria(), false);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
+            }
+        }
+        location = locationManager.getLastKnownLocation(provider);
+
+        cur_long = location.getLongitude();
+        cur_lat = location.getLatitude();
+
     }
 
 
@@ -71,16 +88,45 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(lat,lng);
-
+        LatLng sydney = new LatLng(lat, lng);
+        cur_lat = location.getLatitude();
+        cur_long = location.getLongitude();
 
         mMap.addMarker(new MarkerOptions().position(sydney).title(title));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,18));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 18));
+
+
+
+        LatLng cur_position = new LatLng(cur_lat, cur_long);
+        myposition =mMap.addMarker(new MarkerOptions()
+                .position(cur_position)
+                .title("You are here.")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+        myposition.setTag(0);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
+            }
+        }
+        locationManager.requestLocationUpdates(provider, 40, 1,this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        locationManager.removeUpdates(this);
     }
 
     @Override
     public void onLocationChanged(Location location) {
-
+        cur_lat = location.getLatitude();
+        cur_long = location.getLongitude();
     }
 
     @Override
@@ -95,19 +141,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     @Override
     public void onProviderDisabled(String s) {
-
-    }
-
-    private void requestLocation(){
-        /**
-         * custom method
-         *
-         */
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        criteria.setPowerRequirement(Criteria.POWER_HIGH);
-        String provider = locationManager.getBestProvider(criteria, true);
-        locationManager.requestLocationUpdates(provider, 1000,0.5f, this);
 
     }
 }

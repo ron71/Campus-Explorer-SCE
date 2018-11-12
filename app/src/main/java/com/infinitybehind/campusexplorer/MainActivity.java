@@ -13,6 +13,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -35,7 +36,7 @@ import java.util.logging.LoggingPermission;
 public class MainActivity extends AppCompatActivity implements LocationListener {
     private TabLayout tablayout;
     private ViewPager viewPager;
-    FloatingActionButton locateMeBtn;
+
     double cur_lat;
     double cur_long;
 
@@ -43,16 +44,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private ArrayList<DataModel> labList = null;
     private ArrayList<DataModel> othersList = null;
     private ArrayList<DataModel> facultyList = null;
-
+//    FloatingActionButton locateMeBtn;
     SQLiteDatabase db = null;
-
-    /**
-     * Location Listener works*/
-    String gps_serviceName = Context.LOCATION_SERVICE;
-
-    LocationManager lm;
-
-    String provider;
 
 
     private ArrayList<DataModel> classroomsDataSet() {
@@ -67,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             if (db != null) {
                 Cursor c = db.rawQuery(sql, null);
                 while (c.moveToNext()) {
-                    Log.e("Check", "PASSED");
+                    Log.e("CURSOR Check", "PASSED");
                     DataModel dataItem = new DataModel();
                     String place = "CLASSROOM";
                     String roomno = c.getString(1);
@@ -121,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     dataItem.setAvatarName(avatarName);
                     dataItem.setFloor(floor);
                     dataItem.setLatitude(lat);
-                    dataItem.setLatitude(longi);
+                    dataItem.setLongitude(longi);
                     dataItem.setPlaceName(place);
                     dataItem.setRoomNo(roomno);
 
@@ -163,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     dataItem.setAvatarName(avatarName);
                     dataItem.setFloor(floor);
                     dataItem.setLatitude(lat);
-                    dataItem.setLatitude(longi);
+                    dataItem.setLongitude(longi);
                     dataItem.setPlaceName(roomno);
                     dataItem.setRoomNo(place);
 
@@ -198,18 +191,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     float lat = c.getFloat(3);
                     float longi = c.getFloat(4);
                     int sno = c.getInt(0);
-                    String avatarName = "avatar"+sno;
+                    String avatarName = "avatar" + sno;
 
                     System.out.println("FLOOR : " + floor);
 
                     dataItem.setAvatarName(avatarName);
                     dataItem.setFloor(floor);
                     dataItem.setLatitude(lat);
-                    dataItem.setLatitude(longi);
+                    dataItem.setLongitude(longi);
                     dataItem.setPlaceName(roomno);
                     dataItem.setRoomNo(place);
 
-                   facultyDataset.add(dataItem);
+                    facultyDataset.add(dataItem);
                     Log.d("SET : ", "Success");
                 }
             }
@@ -235,12 +228,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Requesting Permissions
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-
-
         // Linking Locate me Button
-        locateMeBtn = findViewById(R.id.floatingActionButton);
+//        locateMeBtn = findViewById(R.id.floatingActionButton);
         //Linking the tab layout ans pager layout
         tablayout = (TabLayout) findViewById(R.id.tab_layout);
         viewPager = (ViewPager) findViewById(R.id.view2);
@@ -256,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         //Setting the view Pages
         final PagerAdapter adapter = new com.infinitybehind.campusexplorer.adapters.PagerAdapter(
                 getSupportFragmentManager(), tablayout.getTabCount(),
-                classroomList, labList, othersList,facultyList);
+                classroomList, labList, othersList, facultyList);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tablayout));
 
@@ -279,79 +268,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         });
 
-        /**
-         * For Location */
-        lm = (LocationManager) getSystemService(gps_serviceName);
-        provider = lm.getBestProvider(new Criteria(), false);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        Location location = lm.getLastKnownLocation(provider);
+//        locateMeBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity(new Intent(MainActivity.this,MapActivity.class));
+//
+//            }
+//        });
 
-        if (location != null) {
-            //We got the location
-            Log.e("LOCATION : ", "Achieved");
-        } else {
-            Log.e("LOCATION : ", "No Location");
-        }
-        lm.requestLocationUpdates(provider, 400, 0.5f, this);
-        // OnClick method for findMe Button
-        locateMeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q="+cur_lat+","+cur_long+"(You Are here.)"));
-                startActivity(intent);
-
-            }
-        });
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        lm.requestLocationUpdates(provider, 400, 0.5f, this);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        switch (requestCode) {
-            case 1: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-
-        }
-    }
-    // other 'case' lines to check for other
-    // permissions this app might request
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-    //Stop using the location updates to save battery
-        lm.removeUpdates(this);
     }
 
     @Override
