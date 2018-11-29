@@ -16,9 +16,10 @@ Campus Explorer-SCE, an android app which locates the each and every classrooms,
   </tr>
   
   <tr>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td><img src=https://github.com/ron71/Campus-Explorer-SCE/blob/master/ScreenShots/Screenshot_2018-11-12-02-09-14-530_com.infinitybehind.campusexplorer.png></td>
+    <td><img src=https://github.com/ron71/Campus-Explorer-SCE/blob/master/ScreenShots/Screenshot_2018-11-12-02-09-22-196_com.infinitybehind.campusexplorer.png></td>
+    <td><img src=https://github.com/ron71/Campus-Explorer-SCE/blob/master/ScreenShots/Screenshot_2018-11-12-02-09-59-797_com.infinitybehind.campusexplorer.png></td>
   </tr>
+  
 </table>
 
