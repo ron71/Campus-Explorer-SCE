@@ -3,3 +3,9 @@ Campus Explorer-SCE, an android app which locates the each and every classrooms,
 
 <p><h3>Following are some UI screenshots of the different activities and fragments of the app:</h3></p><hr>
 
+<table>
+  <tr></tr>
+  <tr></tr>
+  <tr></tr>
+</table>
+
