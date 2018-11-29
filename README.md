@@ -4,8 +4,21 @@ Campus Explorer-SCE, an android app which locates the each and every classrooms,
 <p><h3>Following are some UI screenshots of the different activities and fragments of the app:</h3></p><hr>
 
 <table>
-  <tr></tr>
-  <tr></tr>
-  <tr></tr>
+  <tr>
+    <td>https://github.com/ron71/Campus-Explorer-SCE/blob/master/ScreenShots/Screenshot_2018-11-12-02-05-13-187_com.infinitybehind.campusexplorer.png</td>
+    <td>https://github.com/ron71/Campus-Explorer-SCE/blob/master/ScreenShots/Screenshot_2018-11-12-02-05-34-218_com.infinitybehind.campusexplorer.png</td>
+    <td>https://github.com/ron71/Campus-Explorer-SCE/blob/master/ScreenShots/Screenshot_2018-11-12-02-05-50-041_com.infinitybehind.campusexplorer.png</td>
+  </tr>
+  <tr>
+    <td>https://github.com/ron71/Campus-Explorer-SCE/blob/master/ScreenShots/Screenshot_2018-11-12-02-05-52-867_com.infinitybehind.campusexplorer.png</td>
+    <td>https://github.com/ron71/Campus-Explorer-SCE/blob/master/ScreenShots/Screenshot_2018-11-12-02-09-06-891_com.infinitybehind.campusexplorer.png</td>
+    <td>https://github.com/ron71/Campus-Explorer-SCE/blob/master/ScreenShots/Screenshot_2018-11-12-02-09-10-220_com.infinitybehind.campusexplorer.png</td>
+  </tr>
+  
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
 </table>
 
