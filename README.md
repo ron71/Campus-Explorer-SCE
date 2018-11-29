@@ -23,5 +23,5 @@ Campus Explorer-SCE, an android app which locates the each and every classrooms,
   
 </table>
 <hr>
-<p><h4>NOTE : </h4>Some avatars are kept hidden so do change the could and add your own avatars after cloning.</p>
+<p><h4>NOTE : </h4>Some avatars are kept hidden so do change your codes and add your own avatars after cloning.</p>
 
